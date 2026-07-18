@@ -1,0 +1,36 @@
+name = "cf-openfile"
+main = "src/index.ts"
+compatibility_date = "2024-12-30"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "development"
+ALLOWED_KEYS = "1234,5678,9012"
+MAX_UPLOAD_SIZE_BYTES = "104857600"
+FILE_TTL_DAYS = "30"
+SESSION_TTL_SECONDS = "28800"
+
+[[r2_buckets]]
+binding = "FILES_BUCKET"
+bucket_name = "cf-openfile-files"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cf-openfile-db"
+database_id = "00000000-0000-0000-0000-000000000000"
+
+[assets]
+directory = "./frontend/dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+[triggers]
+crons = ["0 3 * * *"]
+
+[env.production]
+name = "cf-openfile"
+vars = { ENVIRONMENT = "production" }
+
+[env.preview]
+name = "cf-openfile-preview"
+vars = { ENVIRONMENT = "preview" }
