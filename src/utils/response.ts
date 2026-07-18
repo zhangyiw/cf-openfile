@@ -49,6 +49,10 @@ export function tooLarge(message = 'File too large'): Response {
   return error(message, 'file_too_large', 413)
 }
 
+export function tooManyRequests(message = 'Too many requests'): Response {
+  return error(message, 'too_many_requests', 429)
+}
+
 export function getEnvVar(env: Env, key: keyof Env): string {
   const value = env[key]
   if (typeof value !== 'string' || value.length === 0) {

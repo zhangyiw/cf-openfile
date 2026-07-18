@@ -10,7 +10,8 @@ import {
   isAllowedFileType,
   sanitizeDescription,
 } from '../utils/validation'
-import { error, success, tooLarge } from '../utils/response'
+import { error, success, tooLarge, tooManyRequests } from '../utils/response'
+import { checkRateLimit } from '../utils/rate-limit'
 
 function isFile(value: unknown): value is File {
   return (
@@ -41,11 +42,26 @@ app.get('/:key/files', async (c) => {
   })
 })
 
+const MAX_UPLOADS_PER_ROOM = 30
+const UPLOAD_WINDOW_SECONDS = 3600
+
 app.post('/:key/files', async (c) => {
   const roomKey = c.req.param('key')
   const sessionRoomKey = c.get('roomKey')
   if (roomKey !== sessionRoomKey) {
     return error('Room access mismatch', 'forbidden', 403)
+  }
+
+  const clientIp = c.req.header('CF-Connecting-IP') || 'anonymous'
+  const rateLimit = await checkRateLimit(
+    c.env,
+    `upload:${roomKey}:${clientIp}`,
+    MAX_UPLOADS_PER_ROOM,
+    UPLOAD_WINDOW_SECONDS
+  )
+
+  if (!rateLimit.allowed) {
+    return tooManyRequests('Upload limit reached for this room, please try again later')
   }
 
   const maxSize = getMaxUploadSizeBytes(c.env)
