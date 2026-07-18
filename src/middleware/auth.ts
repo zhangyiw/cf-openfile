@@ -12,17 +12,17 @@ export const authMiddleware = createMiddleware<{ Bindings: Env; Variables: AuthV
   async (c, next) => {
     const header = c.req.header('Authorization')
     if (!header?.startsWith('Bearer ')) {
-      return unauthorized('Missing or invalid authorization header')
+      return unauthorized('缺少或无效的授权头')
     }
 
     const token = header.slice(7).trim()
     if (!token) {
-      return unauthorized('Missing token')
+      return unauthorized('缺少访问令牌')
     }
 
     const session = await verifySessionToken(c.env, token)
     if (!session) {
-      return unauthorized('Invalid or expired session')
+      return unauthorized('会话已失效，请重新进入房间')
     }
 
     c.set('roomKey', session.roomKey)
@@ -34,7 +34,7 @@ export function requireRoomKey(expectedKey: string) {
   return createMiddleware<{ Bindings: Env; Variables: AuthVariables }>(async (c, next) => {
     const roomKey = c.get('roomKey')
     if (roomKey !== expectedKey) {
-      return unauthorized('Room access mismatch')
+      return unauthorized('房间访问权限不匹配')
     }
     await next()
   })

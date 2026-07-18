@@ -21,23 +21,23 @@ app.post('/room', async (c) => {
   )
 
   if (!rateLimit.allowed) {
-    return tooManyRequests('Too many key attempts, please try again later')
+    return tooManyRequests('尝试次数过多，请稍后再试')
   }
 
   let body: { key?: string }
   try {
     body = await c.req.json()
   } catch {
-    return error('Invalid JSON body')
+    return error('请求体格式错误')
   }
 
   const key = body.key?.trim()
   if (!key || !isValidKeyFormat(key)) {
-    return error('Key must be a 4-digit number')
+    return error('钥匙必须是 4 位数字')
   }
 
   if (!isAllowedKey(c.env, key)) {
-    return forbidden('Invalid room key')
+    return forbidden('钥匙无效，无法进入房间')
   }
 
   await ensureRoomExists(c.env.DB, key)

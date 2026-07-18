@@ -23,41 +23,28 @@ export async function checkRateLimit(
   const key = getWindowKey(identifier, windowSeconds)
   const resetAt = windowStart + windowSeconds
 
-  const existing = await env.DB.prepare(
+  // Upsert with atomic window reset using SQLite ON CONFLICT.
+  await env.DB.prepare(
+    `INSERT INTO rate_limits (key, count, window_start) VALUES (?, 1, ?)
+     ON CONFLICT(key) DO UPDATE SET
+       count = CASE WHEN excluded.window_start <> rate_limits.window_start THEN 1 ELSE rate_limits.count + 1 END,
+       window_start = excluded.window_start`
+  )
+    .bind(key, windowStart)
+    .run()
+
+  const row = await env.DB.prepare(
     'SELECT count, window_start FROM rate_limits WHERE key = ?'
   )
     .bind(key)
     .first<{ count: number; window_start: number }>()
 
-  if (!existing) {
-    await env.DB.prepare(
-      'INSERT INTO rate_limits (key, count, window_start) VALUES (?, 1, ?)'
-    )
-      .bind(key, windowStart)
-      .run()
-    return { allowed: true, remaining: maxRequests - 1, resetAt }
-  }
-
-  if (existing.window_start !== windowStart) {
-    await env.DB.prepare(
-      'UPDATE rate_limits SET count = 1, window_start = ? WHERE key = ?'
-    )
-      .bind(windowStart, key)
-      .run()
-    return { allowed: true, remaining: maxRequests - 1, resetAt }
-  }
-
-  if (existing.count >= maxRequests) {
-    return { allowed: false, remaining: 0, resetAt }
-  }
-
-  await env.DB.prepare('UPDATE rate_limits SET count = count + 1 WHERE key = ?')
-    .bind(key)
-    .run()
+  const count = row?.count ?? 1
+  const allowed = count <= maxRequests
 
   return {
-    allowed: true,
-    remaining: maxRequests - existing.count - 1,
+    allowed,
+    remaining: Math.max(0, maxRequests - count),
     resetAt,
   }
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { listFiles, logout, getRoomKey, getDownloadUrl, type FileItem } from '../api/client'
+import { listFiles, logout, getRoomKey, downloadFile, type FileItem } from '../api/client'
 import FileUpload from '../components/FileUpload'
 
 function formatBytes(bytes: number): string {
@@ -63,6 +63,14 @@ function Room() {
     navigate('/')
   }
 
+  const handleDownload = async (file: FileItem) => {
+    try {
+      await downloadFile(file.id, file.original_name)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '下载失败')
+    }
+  }
+
   return (
     <div className="container">
       <div className="card">
@@ -95,14 +103,12 @@ function Room() {
                     剩余 {file.remaining_days} 天
                   </p>
                 </div>
-                <a
+                <button
                   className="button"
-                  href={getDownloadUrl(file.id)}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  onClick={() => handleDownload(file)}
                 >
                   下载
-                </a>
+                </button>
               </div>
             ))}
           </div>

@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
-    "test:e2e": "cd frontend && npm run test:e2e",
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install --with-deps",
     "db:migrate:local": "wrangler d1 migrations apply cf-openfile-db --local",
     "db:migrate:prod": "wrangler d1 migrations apply cf-openfile-db --remote",
     "lint": "tsc --noEmit && cd frontend && tsc --noEmit",
@@ -25,6 +26,7 @@
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.5.0",
     "@cloudflare/workers-types": "^5.20260714.0",
+    "@playwright/test": "^1.61.1",
     "@types/node": "^22.0.0",
     "prettier": "^3.3.0",
     "typescript": "^5.5.0",

@@ -109,8 +109,31 @@ export async function uploadFile(
   })
 }
 
-export function getDownloadUrl(fileId: string): string {
-  return `${API_BASE}/api/files/${fileId}`
+export async function downloadFile(fileId: string, fileName: string): Promise<void> {
+  const token = getToken()
+  if (!token) throw new Error('未登录')
+
+  const response = await fetch(`${API_BASE}/api/files/${fileId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+
+  if (!response.ok) {
+    const result = await response.json().catch(() => ({}))
+    throw new Error(result.error || '下载失败')
+  }
+
+  const blob = await response.blob()
+  const url = window.URL.createObjectURL(blob)
+  try {
+    const a = document.createElement('a')
+    a.href = url
+    a.download = fileName
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+  } finally {
+    window.URL.revokeObjectURL(url)
+  }
 }
 
 export { getToken, getRoomKey }

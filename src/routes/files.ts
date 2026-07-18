@@ -15,12 +15,12 @@ app.get('/:id', async (c) => {
 
   const record = await getFileById(c.env.DB, fileId)
   if (!record || record.room_key !== roomKey) {
-    return notFound('File not found')
+    return notFound('文件不存在')
   }
 
   const object = await c.env.FILES_BUCKET.get(record.storage_key)
   if (!object) {
-    return notFound('File content not found')
+    return notFound('文件内容不存在')
   }
 
   const headers = new Headers()

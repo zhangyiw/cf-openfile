@@ -65,7 +65,7 @@ describe('API integration', () => {
 
     const body = (await response.json()) as { success: boolean; error: string }
     expect(body.success).toBe(false)
-    expect(body.error).toContain('Invalid')
+    expect(body.error).toContain('钥匙无效')
   })
 
   it('accepts valid room key and returns token', async () => {

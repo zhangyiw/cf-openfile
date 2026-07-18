@@ -49,7 +49,7 @@ app.post('/:key/files', async (c) => {
   const roomKey = c.req.param('key')
   const sessionRoomKey = c.get('roomKey')
   if (roomKey !== sessionRoomKey) {
-    return error('Room access mismatch', 'forbidden', 403)
+    return error('房间访问权限不匹配', 'forbidden', 403)
   }
 
   const clientIp = c.req.header('CF-Connecting-IP') || 'anonymous'
@@ -61,7 +61,7 @@ app.post('/:key/files', async (c) => {
   )
 
   if (!rateLimit.allowed) {
-    return tooManyRequests('Upload limit reached for this room, please try again later')
+    return tooManyRequests('上传次数过多，请稍后再试')
   }
 
   const maxSize = getMaxUploadSizeBytes(c.env)
@@ -75,7 +75,7 @@ app.post('/:key/files', async (c) => {
   const description = sanitizeDescription(formData.get('description')?.toString())
 
   if (!isFile(file)) {
-    return error('Missing file', 'missing_file')
+    return error('请选择文件', 'missing_file')
   }
 
   if (file.size > maxSize) {
@@ -83,7 +83,7 @@ app.post('/:key/files', async (c) => {
   }
 
   if (!isAllowedFileType(file.name, file.type)) {
-    return error('File type not allowed', 'file_type_not_allowed', 415)
+    return error('不支持的文件类型', 'file_type_not_allowed', 415)
   }
 
   const fileId = generateId()
