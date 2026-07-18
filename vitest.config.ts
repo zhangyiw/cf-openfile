@@ -8,6 +8,9 @@ export default defineWorkersConfig({
         miniflare: {
           compatibilityDate: '2024-12-30',
           compatibilityFlags: ['nodejs_compat'],
+          d1Databases: {
+            cf_openfile_db: './.wrangler/state/v3/d1',
+          },
         },
       },
     },
