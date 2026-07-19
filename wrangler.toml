@@ -17,7 +17,7 @@ bucket_name = "cf-openfile-files"
 [[d1_databases]]
 binding = "DB"
 database_name = "cf-openfile-db"
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "b57d5bbe-2c66-4086-9106-8807a00deeac"
 
 [assets]
 directory = "./frontend/dist"
