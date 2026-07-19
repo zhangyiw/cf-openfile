@@ -32,5 +32,8 @@
     "typescript": "^5.5.0",
     "vitest": "^2.0.0",
     "wrangler": "^4.0.0"
+  },
+  "overrides": {
+    "@cloudflare/workers-types": "$@cloudflare/workers-types"
   }
 }
