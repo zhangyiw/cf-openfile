@@ -30,7 +30,7 @@ crons = ["0 3 * * *"]
 
 [env.production]
 name = "cf-openfile"
-vars = { ENVIRONMENT = "production", ALLOWED_KEYS = "1234,5678,9012", MAX_UPLOAD_SIZE_BYTES = "104857600", FILE_TTL_DAYS = "30", SESSION_TTL_SECONDS = "28800", SESSION_SECRET = "dev-secret-key-must-be-at-least-32-bytes-long" }
+vars = { ENVIRONMENT = "production", ALLOWED_KEYS = "1234,5678,9012", MAX_UPLOAD_SIZE_BYTES = "104857600", FILE_TTL_DAYS = "30", SESSION_TTL_SECONDS = "28800" }
 
 [[env.production.r2_buckets]]
 binding = "FILES_BUCKET"
@@ -51,7 +51,7 @@ crons = ["0 3 * * *"]
 
 [env.preview]
 name = "cf-openfile-preview"
-vars = { ENVIRONMENT = "preview", ALLOWED_KEYS = "1234,5678,9012", MAX_UPLOAD_SIZE_BYTES = "104857600", FILE_TTL_DAYS = "30", SESSION_TTL_SECONDS = "28800", SESSION_SECRET = "dev-secret-key-must-be-at-least-32-bytes-long" }
+vars = { ENVIRONMENT = "preview", ALLOWED_KEYS = "1234,5678,9012", MAX_UPLOAD_SIZE_BYTES = "104857600", FILE_TTL_DAYS = "30", SESSION_TTL_SECONDS = "28800" }
 
 [[env.preview.r2_buckets]]
 binding = "FILES_BUCKET"
