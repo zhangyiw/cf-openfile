@@ -9,6 +9,7 @@ ALLOWED_KEYS = "1234,5678,9012"
 MAX_UPLOAD_SIZE_BYTES = "104857600"
 FILE_TTL_DAYS = "30"
 SESSION_TTL_SECONDS = "28800"
+SESSION_SECRET = "dev-secret-key-must-be-at-least-32-bytes-long"
 
 [[r2_buckets]]
 binding = "FILES_BUCKET"
