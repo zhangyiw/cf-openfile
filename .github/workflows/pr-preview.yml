@@ -17,6 +17,8 @@ jobs:
 
       - run: npm ci
 
+      - run: cd frontend && npm ci
+
       - run: npm run lint
 
       - run: npm run test
@@ -33,6 +35,8 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
+
+      - run: cd frontend && npm ci
 
       - run: npm run build:frontend
 
