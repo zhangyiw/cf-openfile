@@ -19,6 +19,8 @@ jobs:
 
       - run: cd frontend && npm ci
 
+      - run: npm run build:frontend
+
       - run: npm run lint
 
       - run: npm run test
