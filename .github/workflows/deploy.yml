@@ -44,13 +44,6 @@ jobs:
 
       - run: npm run build:frontend
 
-      - name: Set session secret
-        run: echo "$SESSION_SECRET" | npx wrangler secret put SESSION_SECRET --env production
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
-
       - name: Deploy to Cloudflare
         uses: cloudflare/wrangler-action@v3
         env:
@@ -59,3 +52,10 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --env production --var ALLOWED_KEYS:$ALLOWED_KEYS
+
+      - name: Set session secret
+        run: echo "$SESSION_SECRET" | npx wrangler secret put SESSION_SECRET --env production
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
