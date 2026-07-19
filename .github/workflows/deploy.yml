@@ -51,7 +51,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --env production --var ALLOWED_KEYS:$ALLOWED_KEYS
+          command: deploy --env production --var ALLOWED_KEYS:"${{ secrets.ALLOWED_KEYS }}"
 
       - name: Set session secret
         run: echo "$SESSION_SECRET" | npx wrangler secret put SESSION_SECRET --env production
